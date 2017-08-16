@@ -98,7 +98,6 @@ void checkPossonProcess()
 
 	try
 	{
-
 		CsvFile l_graph("graphs\/poisson_process.csv", "\t");
 
 		l_graph << "n" << "p_{exp}" << "p_{theor}" << endrow;
@@ -119,8 +118,36 @@ void checkPossonProcess()
 	}
 }
 
+void createPacketArrivalHist(std::list<double> p_ftpTraffic)
+{
+	try
+	{
+		CsvFile l_graph("graphs\/ftp_hist.csv", "\t");
+
+		l_graph << "time" << "packet" << endrow;
+
+		for (double l_ftpPacket : p_ftpTraffic)
+		{
+			l_graph << l_ftpPacket << 1 << endrow;
+		}
+	}
+	catch (std::exception& l_ex)
+	{
+		std::cout << l_ex.what() << std::endl;
+	}
+}
+
 void main()
 {
-	checkExponental();
-	checkPossonProcess();
+	/*checkExponental();
+	checkPossonProcess();*/
+
+	double l_simulationTimeInMilliseconds = 100;
+	double l_packeArrivalRate = 0.3;
+
+	std::list<double> l_ftpTraffic = generatePoissonProcess(l_simulationTimeInMilliseconds, l_packeArrivalRate);
+
+	std::cout << (double)l_ftpTraffic.size() / l_simulationTimeInMilliseconds << std::endl;
+
+	createPacketArrivalHist(l_ftpTraffic);
 }
