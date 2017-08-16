@@ -84,9 +84,9 @@ double poissonProbability(const int p_k, const double p_lambda)
 
 void checkPossonProcess()
 {
-	int l_n = 100000;
-	int l_lambda = 4;
-	int l_duration = 10;
+	int l_n = 10000000;
+	int l_lambda = 1;
+	int l_duration = 4;
 
 	std::map<int, int> l_stats;
 
@@ -107,6 +107,11 @@ void checkPossonProcess()
 		{
 			l_graph << l_st.first << (double)l_st.second / l_n << poissonProbability(l_st.first, l_lambda * l_duration) << endrow;
 		}
+
+		/*for (int i = 0; i < 20; ++i)
+		{
+			l_graph << i << poissonProbability(i, l_lambda * l_duration) << poissonProbability(i, l_lambda * l_duration) << endrow;
+		}*/
 	}
 	catch (std::exception& l_ex)
 	{
