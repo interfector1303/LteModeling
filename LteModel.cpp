@@ -1,4 +1,5 @@
 #include "LteModel.h"
+#include "StatsCollector.h"
 
 #include <iostream>
 
@@ -22,6 +23,7 @@ LteModel::LteModel(std::shared_ptr<spdlog::logger> p_logger,
 	  m_logger(p_logger),
 	  m_runtime(Runtime::Clock::now())
 {
+	srand(time(NULL));
 	m_runtime.schedule(m_runtime.timePointForTti(0) - 1ns, std::bind(&LteModel::printTti, this, std::placeholders::_1), this);
 }
 
@@ -61,5 +63,6 @@ void LteModel::run(uint64_t p_ttiCount)
 	for(uint64_t i = 0; i < p_ttiCount; ++i)
 	{
 		m_runtime.trigger(1ms);
+		StatsCollector::getInstance().ttiCounterIncr();
 	}
 }

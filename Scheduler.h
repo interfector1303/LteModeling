@@ -16,6 +16,12 @@ public:
 		      SchedulerAlgorithm p_algo = SchedulerAlgorithm::RoundRobin);
 	virtual ~Scheduler();
 
+	virtual void addUe(uint64_t p_id) = 0;
+	virtual void removeUe(uint64_t p_id) = 0;
+
+	virtual void schedule() = 0;
+	virtual void clearState() = 0;
+
 protected:
 	std::shared_ptr<spdlog::logger> m_logger;
 	Runtime& m_runtime;

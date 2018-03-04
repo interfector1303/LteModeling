@@ -14,7 +14,7 @@ class LteModel
 public:
 	LteModel(std::shared_ptr<spdlog::logger> p_logger,
 		     LteDuplexType p_duplexType = LteDuplexType::LTE_FDD,
-		     LteBand p_band = LteBand::BAND_1_4_MHz);
+		     LteBand p_band = LteBand::BAND_20_MHz);
 
 	~LteModel()
 	{}

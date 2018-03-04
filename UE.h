@@ -7,6 +7,7 @@
 #include "TrafficGenerator.h"
 #include "RadioChannelReciever.h"
 #include "PUCCH.h"
+#include "PUSCH.h"
 
 class TrafficGenerator;
 
@@ -20,6 +21,8 @@ public:
 		  m_srConfigured(false),
 		  m_srPeriodicity(0),
 		  m_srSubfarmeOffset(0),
+		  m_waitUntilForResponse(0),
+		  m_pendingSr(false),
 		  m_dataSize(0)
 	{}
 
@@ -44,15 +47,31 @@ public:
 		m_PUCCH = p_PUCCH;
 	}
 
+	void setPUSCH(std::shared_ptr<PUSCH> p_PUSCH)
+	{
+		m_PUSCH = p_PUSCH;
+	}
+
+	void setENodeBId(uint64_t m_id)
+	{
+		m_eNodeBId = m_id;
+	}
+
 	uint64_t getId() override
 	{
 		return m_id;
 	}
 
-	void recieve(std::shared_ptr<RadioMessage> p_msg) override
-	{
+	void recieve(std::shared_ptr<RadioMessage> p_msg, Runtime::TimePoint p_tm);
 
-	}
+	void processUplinkGrant(std::shared_ptr<UplinkGrantMessage> p_msg,
+		                      Runtime::TimePoint p_tm);
+	void processHarqAck(std::shared_ptr<HarqAckMessage> p_msg,
+		                Runtime::TimePoint p_tm);
+	void processHarqNack(std::shared_ptr<HarqNackMessage> p_msg,
+		                 Runtime::TimePoint p_tm);
+
+	uint64_t bytesInHarqBuffers() const;
 
 private:
 	void processTti(Runtime::TimePoint p_tm);
@@ -63,6 +82,8 @@ private:
 	bool hasResourcesForTransmission() const;
 
 	uint64_t m_id;
+	uint64_t m_eNodeBId;
+
 	std::shared_ptr<spdlog::logger> m_logger;
 	Runtime& m_runtime;
 
@@ -70,13 +91,20 @@ private:
 	bool m_srConfigured;
 	uint32_t m_srPeriodicity;
 	uint32_t m_srSubfarmeOffset;
+	uint64_t m_waitUntilForResponse;
+	bool m_pendingSr;
 
 	// Traffic
 	std::shared_ptr<TrafficGenerator> m_trafficGenerator;
 	std::list<MsgData> m_dataBuffer;
 	size_t m_dataSize;
 
+	std::list<MsgData> m_uplinkHarqBuffer[8];
+
 	//channels
 	std::shared_ptr<PUCCH> m_PUCCH;
+	std::shared_ptr<PUSCH> m_PUSCH;
+
+	std::list<RadioResource> m_allocatedResources;
 };
 

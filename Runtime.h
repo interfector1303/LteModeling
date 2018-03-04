@@ -53,6 +53,8 @@ public:
 
 	TimePoint timePointForTti(uint64_t p_tti);
 
+	std::chrono::microseconds microsecondsFromStart(TimePoint p_tp);
+
 private:
 	struct ScheduledCallback
 	{

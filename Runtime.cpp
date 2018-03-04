@@ -113,6 +113,12 @@ Runtime::TimePoint Runtime::timePointForTti(uint64_t p_tti)
 	return m_start + (p_tti + 1) * 1ms;
 }
 
+std::chrono::microseconds Runtime::microsecondsFromStart(TimePoint p_tp)
+{
+	return std::chrono::time_point_cast<std::chrono::microseconds>(p_tp) -
+		std::chrono::time_point_cast<std::chrono::microseconds>(m_start) - 1ms;
+}
+
 void Runtime::trigger()
 {
 	// process queue elements separately because callback might modify runtime
